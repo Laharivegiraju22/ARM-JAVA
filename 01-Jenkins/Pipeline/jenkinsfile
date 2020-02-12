@@ -17,7 +17,7 @@ node {
   
    sh label: '', script: 'mvn package'
   }
-  
+  }
 def project_terra="04-Terraform/03-Ansible-Deploy"
 dir(project_terra) {
 
