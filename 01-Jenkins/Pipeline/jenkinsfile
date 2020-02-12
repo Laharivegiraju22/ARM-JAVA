@@ -5,9 +5,7 @@ node {
   }
     
  def project_path="01-Jenkins/Code/petclinic"
- stage('Deploy Approval') {
-                input('Do you want to proceed and deploy in production server?')           
-        }
+ 
  dir(project_path) {
     
   stage('Maven-Clean') {
@@ -15,18 +13,7 @@ node {
    sh label: '', script: 'mvn clean'
   }
     
- stage('Maven-Compile') {
-
-   sh label: '', script: 'mvn compile'
-  }
-  
-   stage('Maven-Test') {
-   
-   sh label: '', script: 'mvn test'
-  }
- 
-
-   stage('Maven-Package') {
+  stage('Maven-Package') {
   
    sh label: '', script: 'mvn package'
   }
