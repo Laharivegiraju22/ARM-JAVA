@@ -4,20 +4,6 @@ node {
    git 'https://github.com/Laharivegiraju22/multi-petclinic.git'
   }
     
- def project_path="01-Jenkins/Code/petclinic"
- 
- dir(project_path) {
-    
-  stage('Maven-Clean') {
-  
-   sh label: '', script: 'mvn clean'
-  }
-    
-  stage('Maven-Package') {
-  
-   sh label: '', script: 'mvn package'
-  }
-  }
 def project_terra="04-Terraform/03-Ansible-Deploy"
 dir(project_terra) {
 
