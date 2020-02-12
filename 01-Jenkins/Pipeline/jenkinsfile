@@ -40,14 +40,16 @@ node {
    
  }
 
-def project_terra="04-Terraform/03-Ansible-Deploy"
-dir(project_terra) {
 
-   stage('Prod Deployment on AWS'){
-  
-   sh label: 'terraform', script: '/bin/terraform  init'
-   sh label: 'terraform', script: '/bin/terraform  apply -input=false -auto-approve'
-   }
+def project_terra="04-Terraform/03-Ansible-Deploy/ansible/04-Tomcat" 
+dir(project_terra) { 
+stage('Prod Deployment on AWS'){
+sh label: 'terraform', script: 'ansible-playbook -i /root/.jenkins/workspace/multi-petclinic_infrastructure/04-Terraform/03-Ansible-Deploy/jenkins-ci.ini -u ubuntu --key /root/.ssh/hkey.pem web-playbook.yaml'
+
+ 
+}
+
+ 
 }
 
 }
