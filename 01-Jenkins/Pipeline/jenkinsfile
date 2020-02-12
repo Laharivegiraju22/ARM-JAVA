@@ -8,29 +8,32 @@ node {
  stage('Deploy Approval') {
                 input('Do you want to proceed and deploy in production server?')           
         }
- dir(project_path) {
-    
-  stage('Maven-Clean') {
-  
-   sh label: '', script: 'mvn clean'
-  }
-    
- stage('Maven-Compile') {
+ stage('Sonar Analysis'){
 
-   sh label: '', script: 'mvn compile'
-  }
-  
-   stage('Maven-Test') {
-   
-   sh label: '', script: 'mvn test'
-  }
- 
+	withSonarQubeEnv('SonarQube'){
+	sh 'mvn sonar:sonar'
+	}
+}
 
-   stage('Maven-Package') {
-  
-   sh label: '', script: 'mvn package'
-  }
-  
+stage("Quality Gate"){
+          timeout(time: 1, unit: 'MINUTES') {
+              def qg = waitForQualityGate()
+              if (qg.status != 'OK') {
+                  error "Pipeline aborted due to quality gate failure: ${qg.status}"
+              }
+          }
+      }        
+      
+stage('Jfrog Artifacory Upload') {
+
+	def server= Artifactory.server 'Artifactory'
+	def uploadSpec= """{
+	"files": [{
+	"pattern": "/root/.jenkins/workspace/Ramya/01-Jenkins/Code/petclinic/target/*.war",
+		"target": "petclinic"}]
+	}"""
+server.upload(uploadSpec)
+}
 
  stage('Geting Ready For Ansible') {
   
