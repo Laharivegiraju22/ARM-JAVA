@@ -40,9 +40,6 @@
         <dandelion.datatables.version>1.1.0</dandelion.datatables.version>
 
         <cobertura.version>2.7</cobertura.version>
-
-    </properties>
-<properties>
   <sonar.projectKey>demoangular</sonar.projectKey>
   <sonar.organization>laharivegiraju</sonar.organization>
   <sonar.host.url>https://sonarcloud.io</sonar.host.url>
