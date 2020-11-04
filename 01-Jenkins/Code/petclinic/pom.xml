@@ -42,7 +42,11 @@
         <cobertura.version>2.7</cobertura.version>
 
     </properties>
-
+<properties>
+  <sonar.projectKey>demoangular</sonar.projectKey>
+  <sonar.organization>laharivegiraju</sonar.organization>
+  <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+</properties>
     <dependencyManagement>
         <!-- Import the maven Spring IO Platform Bill Of Materials (BOM) -->
         <dependencies>
