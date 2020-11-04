@@ -43,6 +43,7 @@
   <sonar.projectKey>demoangular</sonar.projectKey>
   <sonar.organization>laharivegiraju</sonar.organization>
   <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+  <sonar.scanner.force-deprecated-java-version>true </sonar.scanner.force-deprecated-java-version>
   
 </properties>
     <dependencyManagement>
