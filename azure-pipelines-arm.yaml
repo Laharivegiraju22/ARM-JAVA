@@ -63,7 +63,7 @@ stages:
           location: 'East US'
           templateLocation: 'Linked artifact'
           csmFile: 'ARM/javawebappdeploy.json'
-          overrideParameters: '-hostingPlanName ${{hostingPlanName}} -webSiteName ${{webAppName}}'
+          overrideParameters: '-hostingPlanName ${{parameters.hostingPlanName}} -webSiteName ${{parameters.webAppName}}'
           deploymentMode: 'Incremental'
        
 - stage: deployment
