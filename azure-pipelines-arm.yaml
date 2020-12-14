@@ -8,7 +8,7 @@ parameters:
     type: string
     default: myjavarm4040
   
-  - name: webAppName
+  - name: webSiteName
     type: string
     default: newjavaarmwebapp
 
@@ -63,7 +63,7 @@ stages:
           location: 'East US'
           templateLocation: 'Linked artifact'
           csmFile: 'ARM/javawebappdeploy.json'
-          overrideParameters: '-hostingPlanName ${{hostingPlanName}} -webAppName ${{webAppName}}'
+          overrideParameters: '-hostingPlanName ${{hostingPlanName}} -webSiteName ${{webAppName}}'
           deploymentMode: 'Incremental'
        
 - stage: deployment
