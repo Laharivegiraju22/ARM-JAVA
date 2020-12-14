@@ -85,6 +85,6 @@ stages:
               ConnectionType: 'AzureRM'
               azureSubscription: 'Free Trial (60584be9-98a4-4707-be50-badf2b4fb922)'
               appType: 'webApp'
-              WebAppName: '${{parameters.webAppName}}'
+              WebAppName: '${{parameters.webSiteName}}'
               packageForLinux: 'D:\a\1\drop\s\01-Jenkins\Code\petclinic\target\petclinic.war'
      
