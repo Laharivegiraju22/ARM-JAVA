@@ -1,7 +1,16 @@
-# Starter pipeline
-# Start with a minimal pipeline that you can customize to build and deploy your code.
-# Add steps that build, run tests, deploy, and more:
-# https://aka.ms/yaml
+parameters:
+  - name: infra
+    displayName: Do you want to deploy webapp using arm?
+    values:
+      - true
+      - false
+  - name: hostingPlanName
+    type: string
+    default: myjavarm4040
+  
+  - name: webAppName
+    type: string
+    default: newjavaarmwebapp
 
 trigger:
 - main
@@ -9,11 +18,73 @@ trigger:
 pool:
   vmImage: 'ubuntu-latest'
 
-steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+stages:
+- stage: build
+  displayName: build stage
+  jobs:
+  - job: build_job
+    displayName: build job
+    steps:
+    - task: Maven@3
+      inputs:
+        mavenPomFile: '01-Jenkins/Code/petclinic/pom.xml'
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        javaHomeOption: 'JDKVersion'
+        mavenVersionOption: 'Default'
+        mavenAuthenticateFeed: false
+        effectivePomSkip: false
+        sonarQubeRunAnalysis: false
+    
+    - task: CopyFiles@2
+      inputs:
+        SourceFolder: '$(agent.builddirectory)'
+        Contents: '**/*.war'
+        TargetFolder: '$(build.artifactstagingdirectory)'
+    
+    - task: PublishBuildArtifacts@1
+      inputs:
+        PathtoPublish: '$(Build.ArtifactStagingDirectory)'
+        ArtifactName: 'drop'
+        publishLocation: 'Container'
+- stage: infraDeployment
+  displayName: deploying webapp
+  jobs:
+  - job: webapp_deployment
+    displayName: deploying webapp
+    steps:
+      - task: AzureResourceManagerTemplateDeployment@3
+        inputs:
+          deploymentScope: 'Resource Group'
+          azureResourceManagerConnection: 'Free Trial (60584be9-98a4-4707-be50-badf2b4fb922)'
+          subscriptionId: '60584be9-98a4-4707-be50-badf2b4fb922'
+          action: 'Create Or Update Resource Group'
+          resourceGroupName: 'lahariRG'
+          location: 'East US'
+          templateLocation: 'Linked artifact'
+          csmFile: 'ARM/javawebappdeploy.json'
+          overrideParameters: '-hostingPlanName ${{hostingPlanName}} -webAppName ${{webAppName}}'
+          deploymentMode: 'Incremental'
+       
+- stage: deployment
+  displayName: deployment stage
+     
+  jobs:
+   - deployment: prod
+     displayName: Blue Deployment
+     pool: 
+       vmImage: windows-latest
+   
+     environment: 'prod'
+     strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Free Trial (60584be9-98a4-4707-be50-badf2b4fb922)'
+              appType: 'webApp'
+              WebAppName: '${{parameters.webAppName}}'
+              packageForLinux: 'D:\a\1\drop\s\01-Jenkins\Code\petclinic\target\petclinic.war'
+     
