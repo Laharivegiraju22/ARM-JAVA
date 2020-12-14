@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+	 "hostingPlanName": {
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 24
+    },
+    "webSiteName": {
+      "type": "string"  
+    }
+	},
+    "functions": [],
+    "variables": {},
+    "resources": [
+        {
+            "name": "[parameters('hostingPlanName')]",
+            "type": "Microsoft.Web/serverfarms",
+            "apiVersion": "2018-02-01",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "F1",
+                "capacity": 1
+            },
+            "tags": {
+                "displayName": "[parameters('hostingPlanName')]"
+            },
+            "properties": {
+                "name": "[parameters('hostingPlanName')]"
+            }
+        },
+        {
+            "name": "[parameters('webSiteName')]",
+            "type": "Microsoft.Web/sites",
+            "apiVersion": "2016-08-01",
+            "location": "[resourceGroup().location]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+            ],
+            "properties": {
+                "name": "[parameters('webSiteName')]",
+                "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('hostingPlanName'))]"
+                
+            },
+            "resources": [
+        {
+          "apiVersion": "2016-08-01",
+          "name": "web",
+          "type": "config",
+          "dependsOn": [
+            "[resourceId('Microsoft.Web/sites/', parameters('webSiteName'))]"
+          ],
+          "properties": {
+            "javaVersion": "1.8",
+            "javaContainer": "TOMCAT",
+            "javaContainerVersion": "9.0"
+          }
+        }
+      ]
+        }
+    ],
+    "outputs": {}
+}
