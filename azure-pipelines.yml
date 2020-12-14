@@ -43,14 +43,21 @@ stages:
   displayName: deployment stage
      
   jobs:
-  - job: deployment_job
-    displayName: deployment Job
-    steps:
-    - task: AzureRmWebAppDeployment@4
-      inputs:
-        ConnectionType: 'AzureRM'
-        azureSubscription: 'Free Trial (60584be9-98a4-4707-be50-badf2b4fb922)'
-        appType: 'webApp'
-        WebAppName: 'myjavaarm'
-        packageForLinux: 'https://dev.azure.com/LahariOrg/_apis/resources/Containers/11788176/drop?itemPath=drop%2Fs%2F01-Jenkins%2FCode%2Fpetclinic%2Ftarget%2Fpetclinic.war'
+   - deployment: prod
+     displayName: Blue Deployment
+     pool: 
+       vmImage: windows-latest
+   
+     environment: 'prod'
+     strategy:
+      runOnce:
+        deploy:
+          steps:
+          - task: AzureRmWebAppDeployment@4
+            inputs:
+              ConnectionType: 'AzureRM'
+              azureSubscription: 'Free Trial (60584be9-98a4-4707-be50-badf2b4fb922)'
+              appType: 'webApp'
+              WebAppName: 'myjavaarm'
+              packageForLinux: 'https://dev.azure.com/LahariOrg/_apis/resources/Containers/11788176/drop?itemPath=drop%2Fs%2F01-Jenkins%2FCode%2Fpetclinic%2Ftarget%2Fpetclinic.war'
      
